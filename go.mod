@@ -1,4 +1,4 @@
-module github.com/RealPatricia/go-functional
+module github.com/RealPatricia/functionalgo
 
 go 1.21.1
 

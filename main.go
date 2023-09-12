@@ -1,4 +1,4 @@
-package go-functional
+package functionalgo
 
 import (
 	"fmt"
