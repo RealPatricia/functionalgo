@@ -1,4 +1,4 @@
-package gofunctional
+package go-functional
 
 import (
 	"reflect"
