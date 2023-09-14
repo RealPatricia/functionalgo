@@ -108,9 +108,7 @@ func GenerateRange[T OrderedNumber](start, end, step T) (chan T, error) {
 		return out, fmt.Errorf("Could not generate range [%v:%v] due to an invalid step size of [%v]", start, end, step)
 	}
 
-	source := func(in T) T {
-		return in + step
-	}
+	source := Adder(step)
 
 	var quitter func(in T) bool
 
