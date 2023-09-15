@@ -1,7 +1,7 @@
 package functionalgo
 
 import (
-	"reflect"
+	"github.com/RealPatricia/pth/assert"
 	"testing"
 )
 
@@ -15,10 +15,10 @@ func TestGenerator(t *testing.T) {
 	}
 
 	nums := Generator(0, source, quitter)
-	expected := Collection[int]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	expected := MakeSlice(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
-	end := FinalValue(StreamToCollection(nums))
-	if !reflect.DeepEqual(end, expected) {
+	end := FinalValue(ChanToSlice(nums))
+	if assert.Equal(end, expected, false) {
 		t.Errorf("Generator did not return the correct result, expected: %v, got: %v", expected, end)
 	}
 }
@@ -47,34 +47,34 @@ func TestValidateRange(t *testing.T) {
 }
 
 func TestGenerateRangeUpDown(t *testing.T) {
-	_, err := GenerateRange(10, 1, 1)
+	_, err := Range(10, 1, 1)
 	if err == nil {
 		t.Errorf("GenerateRange did not produce an error for an invalid range")
 	}
 }
 
 func TestGenerateRangeUp(t *testing.T) {
-	oneToTen, err := GenerateRange(1, 10, 1)
+	oneToTen, err := Range(1, 10, 1)
 	if err != nil {
 		t.Errorf("Generate range produced an error: %v", err)
 	}
-	expected := Collection[int]{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	result := FinalValue(StreamToCollection(oneToTen))
+	expected := MakeSlice(1, 2, 3, 4, 5, 6, 7, 8, 9)
+	result := FinalValue(ChanToSlice(oneToTen))
 
-	if !reflect.DeepEqual(result, expected) {
+	if assert.Equal(result, expected, false) {
 		t.Errorf("GenerateRange failed, expected: %v, got %v", expected, result)
 	}
 }
 
 func TestGenerateRangeDown(t *testing.T) {
-	oneToTen, err := GenerateRange(10, 1, -1)
+	oneToTen, err := Range(10, 0, -1)
 	if err != nil {
 		t.Errorf("Generate range produced an error: %v", err)
 	}
-	expected := Collection[int]{10, 9, 8, 7, 6, 5, 4, 3, 2}
-	result := FinalValue(StreamToCollection(oneToTen))
+	expected := MakeSlice(10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+	result := FinalValue(ChanToSlice(oneToTen))
 
-	if !reflect.DeepEqual(result, expected) {
+	if assert.Equal(result, expected, false) {
 		t.Errorf("GenerateRange failed, expected: %v, got %v", expected, result)
 	}
 }

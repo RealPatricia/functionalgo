@@ -7,7 +7,7 @@ import (
 
 // Generator
 
-func Generator[T any, U func(in T) T, V func(in T) bool](i T, s U, q V) chan T {
+func Generator[T any](i T, s func(in T) T, q func(in T) bool) chan T {
 	out := make(chan T)
 	go func() {
 		defer close(out)
@@ -98,7 +98,7 @@ func ValidateRange[T OrderedNumber](start, end, step T) bool {
 	return valid
 }
 
-func GenerateRange[T OrderedNumber](start, end, step T) (chan T, error) {
+func Range[T OrderedNumber](start, end, step T) (chan T, error) {
 	out := make(chan T)
 	valid := ValidateRange(start, end, step)
 	goingDown := math.Signbit(float64(step))

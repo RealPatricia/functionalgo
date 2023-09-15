@@ -1,9 +1,18 @@
 package functionalgo
 
-type Stream[T any] chan T
+func MakeChan[T any](items ...T) chan T {
+	out := make(chan T)
+	go func() {
+		defer close(out)
+		for _, e := range items {
+			out <- e
+		}
+	}()
+	return out
+}
 
-func MapStream[T, U any](in Stream[T], f func(in T) U) Stream[U] {
-	out := make(Stream[U])
+func MapChan[T, U any](in chan T, f func(in T) U) chan U {
+	out := make(chan U)
 	go func() {
 		defer close(out)
 		for e := range in {
@@ -13,8 +22,8 @@ func MapStream[T, U any](in Stream[T], f func(in T) U) Stream[U] {
 	return out
 }
 
-func FilterStream[T any](in Stream[T], f func(in T) bool) Stream[T] {
-	out := make(Stream[T])
+func FilterChan[T any](in chan T, f func(in T) bool) chan T {
+	out := make(chan T)
 	go func() {
 		defer close(out)
 		for e := range in {
@@ -27,8 +36,8 @@ func FilterStream[T any](in Stream[T], f func(in T) bool) Stream[T] {
 	return out
 }
 
-func ReduceStream[T any](in Stream[T], f func(l, r T) T, init T) Stream[T] {
-	out := make(Stream[T])
+func ReduceChan[T any](in chan T, f func(l, r T) T, init T) chan T {
+	out := make(chan T)
 	go func() {
 		defer close(out)
 		acc := init
@@ -40,7 +49,7 @@ func ReduceStream[T any](in Stream[T], f func(l, r T) T, init T) Stream[T] {
 	return out
 }
 
-func FinalValue[T any](in Stream[T]) T {
+func FinalValue[T any](in chan T) T {
 	var acc T
 	for e := range in {
 		acc = e
@@ -48,9 +57,9 @@ func FinalValue[T any](in Stream[T]) T {
 	return acc
 }
 
-func StreamToCollection[T any](stream Stream[T]) chan Collection[T] {
+func ChanToSlice[T any](stream chan T) chan []T {
 	slice := make([]T, 0)
-	out := make(chan Collection[T])
+	out := make(chan []T)
 	go func() {
 		defer close(out)
 		for e := range stream {
